@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SagarRide - 3D Bus Booking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --accent: #00cec9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            perspective: 1000px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px 0;
+            position: relative;
+            transform-style: preserve-3d;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transform: translateZ(20px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: rotateY(10deg) scale(1.05);
+        }
+
+        .logo i {
+            color: var(--accent);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+
+        .btn-outline:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .btn-solid {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-solid:hover {
+            background: #00b4b1;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 206, 201, 0.4);
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            transform: rotateZ(30deg) translateZ(-100px);
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            transform: translateZ(30px);
+        }
+
+        .hero-text {
+            flex: 1;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero-text h1 span {
+            color: var(--primary);
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #636e72;
+        }
+
+        .search-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform-style: preserve-3d;
+            transition: all 0.5s ease;
+        }
+
+        .search-box:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .search-box h2 {
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 1px solid #dfe6e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+        }
+
+        .hero-visual {
+            flex: 1;
+            position: relative;
+            height: 400px;
+            transform-style: preserve-3d;
+        }
+
+        .bus-3d {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            transform: rotateY(20deg) rotateX(10deg);
+            box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.2);
+            transition: all 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .bus-3d:hover {
+            transform: rotateY(25deg) rotateX(15deg) translateZ(20px);
+        }
+
+        .bus-3d i {
+            font-size: 8rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .bus-3d h3 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .bus-3d p {
+            opacity: 0.8;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background-color: white;
+            transform-style: preserve-3d;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2.5rem;
+            color: var(--dark);
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%) translateZ(20px);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            transform-style: preserve-3d;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.5s ease;
+            transform-style: preserve-3d;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) rotateX(5deg) translateZ(10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: rotateY(180deg) scale(1.1);
+        }
+
+        .feature-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .feature-card p {
+            color: #636e72;
+            line-height: 1.6;
+        }
+
+        /* Popular Routes */
+        .popular-routes {
+            padding: 80px 0;
+            background-color: #f9f9f9;
+            transform-style: preserve-3d;
+        }
+
+        .routes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            transform-style: preserve-3d;
+        }
+
+        .route-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.5s ease;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .route-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .route-card:hover {
+            transform: translateY(-10px) rotateY(5deg) translateZ(10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .route-content {
+            padding: 25px;
+        }
+
+        .route-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .route-cities {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .route-price {
+            background: var(--accent);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .route-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .route-detail {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #636e72;
+        }
+
+        .route-detail i {
+            color: var(--primary);
+        }
+
+        .route-btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .route-btn:hover {
+            background: #5a4bd1;
+            transform: translateY(-3px);
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 80px 0;
+            background-color: white;
+            transform-style: preserve-3d;
+        }
+
+        .testimonials-container {
+            display: flex;
+            gap: 30px;
+            overflow-x: auto;
+            padding: 20px 0;
+            scroll-snap-type: x mandatory;
+            transform-style: preserve-3d;
+        }
+
+        .testimonial-card {
+            min-width: 350px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            scroll-snap-align: start;
+            transition: all 0.5s ease;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-10px) rotateX(5deg) translateZ(10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 5rem;
+            color: var(--secondary);
+            opacity: 0.2;
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+
+        .testimonial-text {
+            margin-bottom: 20px;
+            font-style: italic;
+            color: #636e72;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .author-info h4 {
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .author-info p {
+            color: #636e72;
+            font-size: 0.9rem;
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 L0,100 Z" fill="none" stroke="white" stroke-width="0.5" stroke-dasharray="5,5" opacity="0.2"/></svg>');
+            opacity: 0.1;
+            transform: translateZ(-50px);
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+            transform: translateZ(30px);
+        }
+
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .cta p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-cta {
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .btn-cta:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        .btn-cta-primary {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .btn-cta-primary:hover {
+            background: #00b4b1;
+            border-color: #00b4b1;
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+            transform-style: preserve-3d;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+            transform: translateZ(20px);
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--accent);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #b2bec3;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .footer-column ul li a:hover {
+            color: var(--accent);
+            transform: translateX(5px);
+        }
+
+        .footer-column p {
+            color: #b2bec3;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--accent);
+            transform: translateY(-5px) rotate(10deg);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #b2bec3;
+            font-size: 0.9rem;
+            transform: translateZ(20px);
+        }
+
+        /* 3D Animation Elements */
+        .floating-bus {
+            position: fixed;
+            bottom: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            opacity: 0.1;
+            z-index: -1;
+            animation: floatBus 15s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+
+        @keyframes floatBus {
+            0%, 100% {
+                transform: translate(0, 0) rotateZ(0deg) translateZ(0);
+            }
+            25% {
+                transform: translate(-50px, -50px) rotateZ(5deg) translateZ(10px);
+            }
+            50% {
+                transform: translate(-100px, 0) rotateZ(0deg) translateZ(0);
+            }
+            75% {
+                transform: translate(-50px, 50px) rotateZ(-5deg) translateZ(10px);
+            }
+        }
+
+        .floating-circle {
+            position: fixed;
+            top: 20%;
+            left: -50px;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, var(--accent), #00b4b1);
+            border-radius: 50%;
+            opacity: 0.1;
+            z-index: -1;
+            animation: floatCircle 12s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+
+        @keyframes floatCircle {
+            0%, 100% {
+                transform: translate(0, 0) rotateZ(0deg) translateZ(0);
+            }
+            50% {
+                transform: translate(100px, 50px) rotateZ(180deg) translateZ(20px);
+            }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .hero-content {
+                flex-direction: column;
+            }
+            
+            .hero-text {
+                text-align: center;
+            }
+            
+            .hero-visual {
+                width: 100%;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background: var(--primary);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 40px;
+                transition: all 0.5s ease;
+                z-index: 100;
+            }
+            
+            nav ul.active {
+                left: 0;
+            }
+            
+            .hamburger {
+                display: block;
+            }
+            
+            .auth-buttons {
+                display: none;
+            }
+            
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+            
+            .testimonial-card {
+                min-width: 300px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-text h1 {
+                font-size: 2rem;
+            }
+            
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn-cta {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating 3D Background Elements -->
+    <div class="floating-bus"></div>
+    <div class="floating-circle"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-bus"></i>
+                    <span>SagarRide</span>
+                </div>
+                <nav>
+                    <ul id="nav-menu">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Routes</a></li>
+                        <li><a href="#">Bookings</a></li>
+                        <li><a href="#">Offers</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons">
+                    <button class="btn btn-outline">Login</button>
+                    <button class="btn btn-solid">Sign Up</button>
+                </div>
+                <div class="hamburger" id="hamburger">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Book Your <span>Bus</span> Journey With Ease</h1>
+                    <p>Travel across the country comfortably and affordably with our premium bus services.</p>
+                    <div class="search-box">
+                        <h2>Find Your Perfect Ride</h2>
+                        <form class="search-form">
+                            <div class="form-group">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <input type="text" class="form-control" placeholder="From City">
+                            </div>
+                            <div class="form-group">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <input type="text" class="form-control" placeholder="To City">
+                            </div>
+                            <div class="form-group">
+                                <i class="far fa-calendar-alt"></i>
+                                <input type="date" class="form-control" placeholder="Departure Date">
+                            </div>
+                            <button type="submit" class="btn btn-solid">Search Buses</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="bus-3d">
+                        <i class="fas fa-bus"></i>
+                        <h3>Premium Comfort</h3>
+                        <p>Luxury coaches with all amenities</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose SagarRide</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Safe Travel</h3>
+                    <p>Our buses are equipped with all safety measures and maintained by certified professionals.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                    <h3>Free WiFi</h3>
+                    <p>Stay connected throughout your journey with our high-speed onboard WiFi.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>
+                    <h3>Easy Booking</h3>
+                    <p>Simple and hassle-free booking process with multiple payment options.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Routes -->
+    <section class="popular-routes">
+        <div class="container">
+            <h2 class="section-title">Popular Routes</h2>
+            <div class="routes-container">
+                <div class="route-card">
+                    <div class="route-content">
+                        <div class="route-header">
+                            <div class="route-cities">BCT → DLI</div>
+                            <div class="route-price">$45</div>
+                        </div>
+                        <div class="route-details">
+                            <div class="route-detail">
+                                <i class="far fa-clock"></i>
+                                <span>4h 30m</span>
+                            </div>
+                            <div class="route-detail">
+                                <i class="fas fa-bus"></i>
+                                <span>Luxury Coach</span>
+                            </div>
+                            <div class="route-detail">
+                                <i class="far fa-calendar-alt"></i>
+                                <span>12 daily trips</span>
+                            </div>
+                        </div>
+                        <button class="route-btn">Book Now</button>
+                    </div>
+                </div>
+                <div class="route-card">
+                    <div class="route-content">
+                        <div class="route-header">
+                            <div class="route-cities">HWH → HYB</div>
+                            <div class="route-price">$38</div>
+                        </div>
+                        <div class="route-details">
+                            <div class="route-detail">
+                                <i class="far fa-clock"></i>
+                                <span>6h 15m</span>
+                            </div>
+                            <div class="route-detail">
+                                <i class="fas fa-bus"></i>
+                                <span>Executive Class</span>
+                            </div>
+                            <div class="route-detail">
+                                <i class="far fa-calendar-alt"></i>
+                                <span>8 daily trips</span>
+                            </div>
+                        </div>
+                        <button class="route-btn">Book Now</button>
+                    </div>
+                </div>
+                <div class="route-card">
+                    <div class="route-content">
+                        <div class="route-header">
+                            <div class="route-cities">ADI → MAS</div>
+                            <div class="route-price">$32</div>
+                        </div>
+                        <div class="route-details">
+                            <div class="route-detail">
+                                <i class="far fa-clock"></i>
+                                <span>4h 45m</span>
+                            </div>
+                            <div class="route-detail">
+                                <i class="fas fa-bus"></i>
+                                <span>Standard Coach</span>
+                            </div>
+                            <div class="route-detail">
+                                <i class="far fa-calendar-alt"></i>
+                                <span>10 daily trips</span>
+                            </div>
+                        </div>
+                        <button class="route-btn">Book Now</button>
+                    </div>
+                </div>
+                <div class="route-card">
+                    <div class="route-content">
+                        <div class="route-header">
+                            <div class="route-cities">LKO → JP</div>
+                            <div class="route-price">$28</div>
+                        </div>
+                        <div class="route-details">
+                            <div class="route-detail">
+                                <i class="far fa-clock"></i>
+                                <span>3h 30m</span>
+                            </div>
+                            <div class="route-detail">
+                                <i class="fas fa-bus"></i>
+                                <span>Premium Class</span>
+                            </div>
+                            <div class="route-detail">
+                                <i class="far fa-calendar-alt"></i>
+                                <span>15 daily trips</span>
+                            </div>
+                        </div>
+                        <button class="route-btn">Book Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">What Our Customers Say</h2>
+            <div class="testimonials-container">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">The journey was extremely comfortable with ample leg space and clean interiors. The WiFi worked perfectly throughout the trip. Will definitely book again!</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JD</div>
+                        <div class="author-info">
+                            <h4>John Doe</h4>
+                            <p>Frequent Traveler</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">I was impressed by the punctuality and professionalism of the staff. The bus had all the amenities promised and the seats were very comfortable for the long journey.</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">AS</div>
+                        <div class="author-info">
+                            <h4>Alice Smith</h4>
+                            <p>Business Traveler</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">Booking through SagarRide was so easy and the prices were very reasonable compared to other options. The bus was clean and the driver was very courteous.</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">RJ</div>
+                        <div class="author-info">
+                            <h4>Robert Johnson</h4>
+                            <p>Student</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready for Your Next Adventure?</h2>
+                <p>Download our mobile app for exclusive offers, easy booking, and real-time tracking of your bus.</p>
+                <div class="cta-buttons">
+                    <button class="btn-cta btn-cta-primary">
+                        <i class="fab fa-apple"></i> App Store
+                    </button>
+                    <button class="btn-cta">
+                        <i class="fab fa-google-play"></i> Google Play
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>SagarRide</h3>
+                    <p>Making bus travel comfortable, affordable and convenient for everyone across the country.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Routes</a></li>
+                        <li><a href="#">Services</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Cancellation Policy</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Bus Street, Transit City</li>
+                        <li><i class="fas fa-phone-alt"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@sagarride.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 SagarRide. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('nav-menu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            hamburger.innerHTML = navMenu.classList.contains('active') ? 
+                '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        });
+
+        // 3D Animation for Cards on Scroll
+        const animateOnScroll = () => {
+            const cards = document.querySelectorAll('.feature-card, .route-card, .testimonial-card');
+            
+            cards.forEach(card => {
+                const cardPosition = card.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+                
+                if(cardPosition < screenPosition) {
+                    card.style.transform = 'translateY(0) rotateX(0) translateZ(10px)';
+                    card.style.opacity = '1';
+                }
+            });
+        };
+
+        // Set initial state for animation
+        document.querySelectorAll('.feature-card, .route-card, .testimonial-card').forEach(card => {
+            card.style.transform = 'translateY(50px) rotateX(10deg) translateZ(0)';
+            card.style.opacity = '0';
+            card.style.transition = 'all 0.5s ease';
+        });
+
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+
+        // 3D Bus Animation in Hero Section
+        const bus3d = document.querySelector('.bus-3d');
+        
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            bus3d.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg) translateZ(20px)`;
+        });
+
+        // Reset bus position when mouse leaves
+        document.addEventListener('mouseleave', () => {
+            bus3d.style.transform = 'rotateY(20deg) rotateX(10deg)';
+        });
+
+        // Date picker - set min date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.querySelector('input[type="date"]').setAttribute('min', today);
+    </script>
+</body>
+</html>
